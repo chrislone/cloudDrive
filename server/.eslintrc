@@ -1,0 +1,10 @@
+{
+  "extends": "eslint-config-egg",
+  "root": true,
+  "rules": {
+    "arrow-parens": ["error", "always"],
+    "comma-dangle": "off",
+    "newline-per-chained-call": "off",
+    "array-bracket-spacing": "off"
+  }
+}
