@@ -9,10 +9,10 @@ interface FileIconProps {
   onClick: any
 }
 
-function Item(url: string) {
-  if (isDirectory(url)) {
+function Item(name: string) {
+  if (isDirectory(name)) {
     return <Iconfont type="wenjianjia-1" size={64}></Iconfont>
-  } else if (isImage(url)) {
+  } else if (isImage(name)) {
     return <Iconfont type="image" size={64}></Iconfont>
   } else {
     return <Iconfont type="fb" size={64}></Iconfont>
@@ -24,7 +24,7 @@ function FileIcon(props: FileIconProps) {
 
   return (
     <div className="file-item" onClick={onClick}>
-      {Item(url)}
+      {Item(name)}
       <div className="name">
         <Tooltip placement="topLeft" title={name}>
           {name}

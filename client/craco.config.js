@@ -1,8 +1,8 @@
 // craco.config.js
-const CracoAlias = require('craco-alias'); // 如果需要配置别名
-const webpack = require('webpack');
+const CracoAlias = require('craco-alias') // 如果需要配置别名
+const webpack = require('webpack')
 // const path = require("path");
-const CracoLessPlugin = require('craco-less');
+const CracoLessPlugin = require('craco-less')
 
 module.exports = {
   typescript: {
@@ -28,13 +28,15 @@ module.exports = {
         new webpack.ProvidePlugin({
           React: 'react',
         }),
-      );
-
-      webpackConfig.devServer.open = false;
+      )
 
       // 其他配置更改...
-      return webpackConfig;
+      return webpackConfig
     },
+  },
+  devServer: {
+    // 设置 devServer 的 open 选项为 false
+    open: false,
   },
   plugins: [
     {
@@ -60,4 +62,4 @@ module.exports = {
       },
     },
   ],
-};
+}
