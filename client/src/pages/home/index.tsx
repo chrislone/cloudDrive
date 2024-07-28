@@ -3,6 +3,7 @@ import './index.less'
 import FileIcon from '@/components/Fileicon'
 import { useEffect, useState } from 'react'
 import { fetchFileList } from '@/api'
+import { useLocation } from 'react-router-dom'
 
 const { Content } = Layout
 
@@ -30,6 +31,10 @@ function Home() {
   const [list, setList] = useState<IOSSFileItem[]>([])
   const [imagePreviewVisible, setImagePreviewVisible] = useState<boolean>(false)
   const [previewImageUrl, setPreviewImageUrl] = useState<string>('')
+  const location = useLocation()
+  const searchParams = new URLSearchParams(location.search)
+
+  // const queryDir = searchParams.get('dir') || ''
 
   function fetchList() {
     fetchFileList().then((res) => {

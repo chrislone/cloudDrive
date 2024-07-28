@@ -6,7 +6,6 @@ const moment = require('moment')
 class OssController extends Controller {
   async callback() {
     const { ctx } = this
-    // const mysqlConfig = app.config.mysql2;
 
     // 公钥地址
     const pubKeyAddr = Buffer.from(
@@ -76,12 +75,12 @@ class OssController extends Controller {
   // 获取列表
   async list() {
     const { ctx, app } = this
-    ctx.validate(
-      {
-        dir: 'string?',
-      },
-      ctx.request.body,
-    )
+    // ctx.validate(
+    //   {
+    //     dir: 'string?',
+    //   },
+    //   ctx.request.body,
+    // )
     const config = app.config.aliOSSConfig
     // const client = new OSS(config);
     const client = new OSS({
@@ -94,11 +93,10 @@ class OssController extends Controller {
       bucket: config.bucket,
       secure: true,
     })
+    console.log('ctx.request.body: ', ctx.request.body)
     try {
       // 填写目录名称，目录需以正斜线结尾。
-      const result = await client.listV2({
-        prefix: '',
-      })
+      const result = await client.listV2()
       const body = []
       for await (const item of result?.objects) {
         const url = await client.asyncSignatureUrl(item.name, {

@@ -3,7 +3,6 @@
  * @param path
  */
 function isDirectory(path: string): boolean {
-  console.log('path: ', path)
   return /\/$/.test(path)
 }
 

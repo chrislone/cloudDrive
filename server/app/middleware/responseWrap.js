@@ -3,9 +3,9 @@
 
 module.exports = (options = {}) => {
   return async function responseWrap(ctx, next) {
-    await next();
+    await next()
 
-    ctx.logger.info('ctx.status: ', ctx.status);
+    ctx.logger.info('ctx.status: ', ctx.status)
     if (ctx.status === 200) {
       ctx.body = {
         code: ctx.status,
@@ -13,7 +13,7 @@ module.exports = (options = {}) => {
         msg: '操作成功',
         errorList: [],
         traceId: ctx.traceId,
-      };
+      }
     }
     // // 后续中间件执行完成后，将响应体转换成 gzip
     // let body = ctx.body;
@@ -29,5 +29,5 @@ module.exports = (options = {}) => {
     // stream.end(body);
     // ctx.body = stream;
     // ctx.set('Content-Encoding', 'gzip');
-  };
-};
+  }
+}
