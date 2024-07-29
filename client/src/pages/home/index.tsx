@@ -57,8 +57,6 @@ function Home() {
   const params = useParams()
   const prefix = params['*'] as string
 
-  console.log('prefix', prefix)
-
   function fetchList() {
     fetchFileList({
       prefix: appendSlash(prefix),

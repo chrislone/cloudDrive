@@ -75,7 +75,7 @@ class OssController extends Controller {
   // 获取列表
   async list() {
     const { ctx, app } = this
-    const { logger, request } = ctx
+    const { logger, request, helper } = ctx
     ctx.validate(
       {
         dir: 'string?',
@@ -106,6 +106,10 @@ class OssController extends Controller {
           expires: 1800,
           method: 'GET',
         })
+        // 跳过本路劲
+        if (item.name === helper.appendSlash(request.body.prefix)) {
+          continue
+        }
         body.push({
           name: item.name,
           type: item.type,
