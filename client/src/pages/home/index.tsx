@@ -3,7 +3,8 @@ import './index.less'
 import FileIcon from '@/components/Fileicon'
 import { useEffect, useState } from 'react'
 import { fetchFileList } from '@/api'
-import { useLocation } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
+import { isDirectory } from '@/utils'
 
 const { Content } = Layout
 
@@ -27,29 +28,60 @@ const layoutStyle = {
   overflow: 'auto',
 }
 
+// 在路径之后增加斜杠 /
+const appendSlash = (path: string): string => {
+  const reg = /\/$/
+  if (!path) {
+    return ''
+  }
+  if (!reg.test(path)) {
+    return path + '/'
+  }
+  return path
+}
+
+// 删除路径最后的斜杠 /
+const deleteSlash = (path: string): string => {
+  const reg = /\/$/
+  if (reg.test(path)) {
+    return path.replace(reg, '')
+  }
+  return path
+}
+
 function Home() {
   const [list, setList] = useState<IOSSFileItem[]>([])
   const [imagePreviewVisible, setImagePreviewVisible] = useState<boolean>(false)
   const [previewImageUrl, setPreviewImageUrl] = useState<string>('')
-  const location = useLocation()
-  const searchParams = new URLSearchParams(location.search)
+  const navigate = useNavigate()
+  const params = useParams()
+  const prefix = params['*'] as string
 
-  // const queryDir = searchParams.get('dir') || ''
+  console.log('prefix', prefix)
 
   function fetchList() {
-    fetchFileList().then((res) => {
+    fetchFileList({
+      prefix: appendSlash(prefix),
+    }).then((res) => {
       setList(res.data)
     })
   }
 
-  function handleFileIconClick(url: string): void {
+  function handleFileIconClick(item: IOSSFileItem): void {
+    const { url, name } = item
+
+    if (isDirectory(name)) {
+      navigate(`/${deleteSlash(name)}`)
+      return
+    }
+
     setPreviewImageUrl(url)
     setImagePreviewVisible(true)
   }
 
   useEffect(() => {
     fetchList()
-  }, [])
+  }, [prefix])
 
   return (
     <>
@@ -64,7 +96,7 @@ function Home() {
                     name={item.name}
                     url={item.url}
                     onClick={() => {
-                      handleFileIconClick(item.url)
+                      handleFileIconClick(item)
                     }}
                   ></FileIcon>
                 )

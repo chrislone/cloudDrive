@@ -24,7 +24,7 @@ const fileTypeMap: FileTypeMapping = {
   UNKNOWN: 4,
 }
 
-function getFileType(filename: string): number {
+function getFileType(filename: string): FileTypeMapping[keyof FileTypeMapping] {
   const extension = filename.substring(filename.lastIndexOf('.') + 1)
   const lowerExt = extension?.toLowerCase()
   switch (lowerExt) {

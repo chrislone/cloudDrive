@@ -37,6 +37,18 @@ module.exports = {
   devServer: {
     // 设置 devServer 的 open 选项为 false
     open: false,
+    https: false,
+    port: 3000,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    },
+    proxy: {
+      '/api': {
+        target: 'http://localhost:7001',
+        changeOrigin: true,
+        logLevel: 'debug',
+      },
+    },
   },
   plugins: [
     {

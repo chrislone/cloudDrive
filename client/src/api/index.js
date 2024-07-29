@@ -1,8 +1,9 @@
 import http from '@/http'
 
-const fetchFileList = () => {
-  return http('http://localhost:7001/oss/file/list', {
+const fetchFileList = (data = {}) => {
+  return http('/api/oss/file/list', {
     method: 'POST',
+    data,
   })
 }
 

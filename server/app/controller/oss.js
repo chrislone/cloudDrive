@@ -75,14 +75,14 @@ class OssController extends Controller {
   // 获取列表
   async list() {
     const { ctx, app } = this
-    // ctx.validate(
-    //   {
-    //     dir: 'string?',
-    //   },
-    //   ctx.request.body,
-    // )
+    const { logger, request } = ctx
+    ctx.validate(
+      {
+        dir: 'string?',
+      },
+      request.body,
+    )
     const config = app.config.aliOSSConfig
-    // const client = new OSS(config);
     const client = new OSS({
       // yourregion填写Bucket所在地域。以华东1（杭州）为例，Region填写为oss-cn-hangzhou。
       region: config.region,
@@ -93,14 +93,17 @@ class OssController extends Controller {
       bucket: config.bucket,
       secure: true,
     })
-    console.log('ctx.request.body: ', ctx.request.body)
+    logger.info('oss/file/list: ', request.body)
     try {
       // 填写目录名称，目录需以正斜线结尾。
-      const result = await client.listV2()
+      const result = await client.listV2({
+        prefix: request.body.prefix,
+      })
       const body = []
       for await (const item of result?.objects) {
         const url = await client.asyncSignatureUrl(item.name, {
-          expires: 3600,
+          // default 1800 seconds
+          expires: 1800,
           method: 'GET',
         })
         body.push({
@@ -110,7 +113,6 @@ class OssController extends Controller {
           url,
         })
       }
-      ctx.logger.info('list result: ', body)
       ctx.body = body
     } catch (e) {
       console.error(e)

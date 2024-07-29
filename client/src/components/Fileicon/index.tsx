@@ -20,7 +20,7 @@ function Item(name: string) {
 }
 
 function FileIcon(props: FileIconProps) {
-  const { name, url, onClick } = props
+  const { name, onClick } = props
 
   return (
     <div className="file-item" onClick={onClick}>
