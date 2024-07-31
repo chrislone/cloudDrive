@@ -1,31 +1,29 @@
-import { Flex, Layout, Image } from 'antd'
+import { Flex, Layout, Image, Button, Upload, Space } from 'antd'
+import {
+  ArrowLeftOutlined,
+  CloudUploadOutlined,
+  PlusOutlined,
+} from '@ant-design/icons'
 import './index.less'
 import FileIcon from '@/components/Fileicon'
 import { useEffect, useState } from 'react'
 import { fetchFileList } from '@/api'
 import { useNavigate, useParams } from 'react-router-dom'
 import { isDirectory } from '@/utils'
+import {
+  contentStyle,
+  layoutStyle,
+  headerStyle,
+  footerStyle,
+  uploadFileProps,
+  uploadDirectoryProps,
+} from './data'
 
-const { Content } = Layout
+const { Header, Content, Footer } = Layout
 
 interface IOSSFileItem {
   url: string
   name: string
-}
-
-const contentStyle: React.CSSProperties = {
-  textAlign: 'center',
-  minHeight: 'calc(100vh - 40px)',
-  lineHeight: '120px',
-  color: '#fff',
-  backgroundColor: '#ddd',
-  padding: 10,
-}
-
-const layoutStyle = {
-  borderRadius: 8,
-  margin: 20,
-  overflow: 'auto',
 }
 
 // 在路径之后增加斜杠 /
@@ -77,14 +75,28 @@ function Home() {
     setImagePreviewVisible(true)
   }
 
+  function handleGoBack() {
+    navigate(-1)
+  }
+
   useEffect(() => {
     fetchList()
   }, [prefix])
 
   return (
     <>
-      <Flex gap="middle" wrap>
-        <Layout style={layoutStyle}>
+      <Layout style={layoutStyle}>
+        <Flex wrap vertical className="flex-wrap">
+          <Header style={headerStyle}>
+            <Space>
+              <Button onClick={handleGoBack} icon={<ArrowLeftOutlined />}>
+                后退
+              </Button>
+              <Upload {...uploadDirectoryProps}>
+                <Button icon={<CloudUploadOutlined />}>上传文件夹</Button>
+              </Upload>
+            </Space>
+          </Header>
           <Content style={contentStyle}>
             <div className="list">
               {list.map((item: IOSSFileItem, index: number) => {
@@ -101,22 +113,30 @@ function Home() {
               })}
             </div>
           </Content>
-        </Layout>
-      </Flex>
-
-      <Image
-        width={200}
-        style={{ display: 'none' }}
-        src={previewImageUrl}
-        preview={{
-          visible: imagePreviewVisible,
-          scaleStep: 0.5,
-          src: previewImageUrl,
-          onVisibleChange: (value) => {
-            setImagePreviewVisible(value)
-          },
-        }}
-      />
+          <Footer style={footerStyle}>
+            <Upload {...uploadFileProps} className="file-uploader">
+              <Button
+                icon={<PlusOutlined />}
+                autoInsertSpace={false}
+                block
+              ></Button>
+            </Upload>
+          </Footer>
+        </Flex>
+        <Image
+          width={200}
+          style={{ display: 'none' }}
+          src={previewImageUrl}
+          preview={{
+            visible: imagePreviewVisible,
+            scaleStep: 0.5,
+            src: previewImageUrl,
+            onVisibleChange: (value) => {
+              setImagePreviewVisible(value)
+            },
+          }}
+        />
+      </Layout>
     </>
   )
 }
