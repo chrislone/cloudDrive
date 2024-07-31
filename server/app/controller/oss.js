@@ -98,6 +98,7 @@ class OssController extends Controller {
       // 填写目录名称，目录需以正斜线结尾。
       const result = await client.listV2({
         prefix: request.body.prefix,
+        delimiter: '/',
       })
       const body = []
       for await (const item of result?.objects) {
