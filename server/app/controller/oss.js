@@ -94,37 +94,39 @@ class OssController extends Controller {
       secure: true,
     })
     logger.info('oss/file/list: ', request.body)
-    try {
-      // 填写目录名称，目录需以正斜线结尾。
-      const result = await client.listV2({
-        prefix: request.body.prefix,
-        delimiter: '/',
-      })
-      const body = []
-      for await (const item of result?.objects) {
-        const url = await client.asyncSignatureUrl(item.name, {
-          // default 1800 seconds
-          expires: 1800,
-          method: 'GET',
-        })
-        // 跳过本路劲
-        if (item.name === helper.appendSlash(request.body.prefix)) {
-          continue
-        }
-        body.push({
-          name: item.name,
-          type: item.type,
-          size: item.size,
-          url,
-        })
-      }
-      ctx.body = body
-    } catch (e) {
-      console.error(e)
-      ctx.body = {
-        msg: 'error',
-      }
+    const prefix = helper.appendSlash(request.body.prefix)
+    let regExp = new RegExp(`^.*${prefix}.+\/.*$`)
+    // 首页
+    if (!prefix) {
+      regExp = /^.*\/.+$/
     }
+
+    // 填写目录名称，目录需以正斜线结尾。
+    const result = await client.listV2({
+      prefix,
+    })
+    const body = []
+    for await (const item of result?.objects) {
+      const url = await client.asyncSignatureUrl(item.name, {
+        // default 1800 seconds
+        expires: 1800,
+        method: 'GET',
+      })
+      // 跳过本路劲
+      if (item.name === helper.appendSlash(request.body.prefix)) {
+        continue
+      }
+      if (regExp.test(item.name)) {
+        continue
+      }
+      body.push({
+        name: item.name,
+        type: item.type,
+        size: item.size,
+        url,
+      })
+    }
+    ctx.body = body
   }
 
   // 创建目录

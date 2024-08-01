@@ -1,4 +1,4 @@
-import { Flex, Layout, Image, Button, Upload, Space } from 'antd'
+import { Flex, Layout, Image, Button, Upload, Space, Empty, Spin } from 'antd'
 import {
   ArrowLeftOutlined,
   CloudUploadOutlined,
@@ -9,7 +9,7 @@ import FileIcon from '@/components/Fileicon'
 import { useEffect, useState } from 'react'
 import { fetchFileList } from '@/api'
 import { useNavigate, useParams } from 'react-router-dom'
-import { isDirectory } from '@/utils'
+import { isDirectory, appendSlash, deleteSlash } from '@/utils'
 import {
   contentStyle,
   layoutStyle,
@@ -26,41 +26,26 @@ interface IOSSFileItem {
   name: string
 }
 
-// 在路径之后增加斜杠 /
-const appendSlash = (path: string): string => {
-  const reg = /\/$/
-  if (!path) {
-    return ''
-  }
-  if (!reg.test(path)) {
-    return path + '/'
-  }
-  return path
-}
-
-// 删除路径最后的斜杠 /
-const deleteSlash = (path: string): string => {
-  const reg = /\/$/
-  if (reg.test(path)) {
-    return path.replace(reg, '')
-  }
-  return path
-}
-
 function Home() {
   const [list, setList] = useState<IOSSFileItem[]>([])
   const [imagePreviewVisible, setImagePreviewVisible] = useState<boolean>(false)
   const [previewImageUrl, setPreviewImageUrl] = useState<string>('')
+  const [loading, setLoading] = useState<boolean>(false)
   const navigate = useNavigate()
   const params = useParams()
   const prefix = params['*'] as string
 
   function fetchList() {
+    setLoading(true)
     fetchFileList({
       prefix: appendSlash(prefix),
-    }).then((res) => {
-      setList(res.data)
     })
+      .then((res) => {
+        setList(res.data)
+      })
+      .finally(() => {
+        setLoading(false)
+      })
   }
 
   function handleFileIconClick(item: IOSSFileItem): void {
@@ -86,7 +71,7 @@ function Home() {
   return (
     <>
       <Layout style={layoutStyle}>
-        <Flex wrap vertical className="flex-wrap">
+        <Flex vertical className="flex-wrap">
           <Header style={headerStyle}>
             <Space>
               <Button onClick={handleGoBack} icon={<ArrowLeftOutlined />}>
@@ -98,20 +83,24 @@ function Home() {
             </Space>
           </Header>
           <Content style={contentStyle}>
-            <div className="list">
-              {list.map((item: IOSSFileItem, index: number) => {
-                return (
-                  <FileIcon
-                    key={index}
-                    name={item.name}
-                    url={item.url}
-                    onClick={() => {
-                      handleFileIconClick(item)
-                    }}
-                  ></FileIcon>
-                )
-              })}
-            </div>
+            {list.length ? (
+              <div className="list">
+                {list.map((item: IOSSFileItem, index: number) => {
+                  return (
+                    <FileIcon
+                      key={index}
+                      name={item.name}
+                      url={item.url}
+                      onClick={() => {
+                        handleFileIconClick(item)
+                      }}
+                    ></FileIcon>
+                  )
+                })}
+              </div>
+            ) : (
+              <Empty description={<span>这里什么都没有</span>} />
+            )}
           </Content>
           <Footer style={footerStyle}>
             <Upload {...uploadFileProps} className="file-uploader">
@@ -136,6 +125,7 @@ function Home() {
             },
           }}
         />
+        <Spin spinning={loading} fullscreen delay={500}></Spin>
       </Layout>
     </>
   )

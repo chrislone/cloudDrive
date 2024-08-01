@@ -24,6 +24,27 @@ const fileTypeMap: FileTypeMapping = {
   UNKNOWN: 4,
 }
 
+// 在路径之后增加斜杠 /
+const appendSlash = (path: string): string => {
+  const reg = /\/$/
+  if (!path) {
+    return ''
+  }
+  if (!reg.test(path)) {
+    return path + '/'
+  }
+  return path
+}
+
+// 删除路径最后的斜杠 /
+const deleteSlash = (path: string): string => {
+  const reg = /\/$/
+  if (reg.test(path)) {
+    return path.replace(reg, '')
+  }
+  return path
+}
+
 function getFileType(filename: string): FileTypeMapping[keyof FileTypeMapping] {
   const extension = filename.substring(filename.lastIndexOf('.') + 1)
   const lowerExt = extension?.toLowerCase()
@@ -32,6 +53,7 @@ function getFileType(filename: string): FileTypeMapping[keyof FileTypeMapping] {
     case 'jpeg':
     case 'png':
     case 'gif':
+    case 'webp':
       return fileTypeMap.IMAGE
     case 'mp4':
     case 'avi':
@@ -49,4 +71,11 @@ function getFileType(filename: string): FileTypeMapping[keyof FileTypeMapping] {
   }
 }
 
-export { isDirectory, getFileType, fileTypeMap, isImage }
+export {
+  isDirectory,
+  getFileType,
+  fileTypeMap,
+  isImage,
+  appendSlash,
+  deleteSlash,
+}

@@ -1,4 +1,5 @@
 import React from 'react'
+import {Flex} from "antd";
 import ReactDOM from 'react-dom/client'
 import './index.less'
 // import reportWebVitals from './reportWebVitals';
@@ -8,7 +9,11 @@ import router from './router'
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
   // <React.StrictMode>
-  <RouterProvider router={router} />,
+	<Flex vertical={true} className="main-container-wrap">
+		<div className="main-container">
+			<RouterProvider router={router} />,
+		</div>
+	</Flex>
   // </React.StrictMode>,
 )
 

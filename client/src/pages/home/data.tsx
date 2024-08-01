@@ -13,21 +13,22 @@ const contentStyle: React.CSSProperties = {
   textAlign: 'center',
   minHeight: `calc(100% - 20px - ${headerHeight}px - ${footerHeight}px)`,
   lineHeight: '120px',
-  color: '#fff',
   padding: 10,
   flex: 'auto',
+  overflowY: 'auto',
+  overflowX: 'hidden',
 }
 
 const footerStyle: React.CSSProperties = {
   padding: '10px 20px',
   lineHeight: 'normal',
   height: `${footerHeight}px`,
+  backgroundColor: '#eee',
 }
 
 const layoutStyle: React.CSSProperties = {
   overflow: 'hidden',
-  padding: 10,
-  height: '100vh',
+  height: '100%',
 }
 
 const uploadFileProps: UploadProps = {
