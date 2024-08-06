@@ -95,11 +95,9 @@ class OssController extends Controller {
     })
     logger.info('oss/file/list: ', request.body)
     const prefix = helper.appendSlash(request.body.prefix)
-    let regExp = new RegExp(`^.*${prefix}.+\/.*$`)
-    // 首页
-    if (!prefix) {
-      regExp = /^.*\/.+$/
-    }
+    const prefixPathList = prefix.split('/').filter((i) => {
+      return i
+    })
 
     // 填写目录名称，目录需以正斜线结尾。
     const result = await client.listV2({
@@ -107,6 +105,11 @@ class OssController extends Controller {
     })
     const body = []
     for await (const item of result?.objects) {
+      const pathList = item.name.split('/').filter((i) => {
+        return i
+      })
+      console.log('pathList: ', pathList)
+      const minus = pathList.length - prefixPathList.length
       const url = await client.asyncSignatureUrl(item.name, {
         // default 1800 seconds
         expires: 1800,
@@ -116,16 +119,20 @@ class OssController extends Controller {
       if (item.name === helper.appendSlash(request.body.prefix)) {
         continue
       }
-      if (regExp.test(item.name)) {
+      if (minus > 1) {
         continue
       }
       body.push({
         name: item.name,
+        currentName: helper.isDirectory(item.name)
+          ? `${pathList[pathList.length - 1]}/`
+          : `${pathList[pathList.length - 1]}`,
         type: item.type,
         size: item.size,
         url,
       })
     }
+    logger.info('oss/file/list body: ', body)
     ctx.body = body
   }
 

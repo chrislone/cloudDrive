@@ -88,4 +88,7 @@ module.exports = {
     }
     return path
   },
+  isDirectory(path) {
+    return /\/$/.test(path)
+  },
 }

@@ -6,6 +6,7 @@ import { Tooltip } from 'antd'
 interface FileIconProps {
   name: string
   url: string
+  currentName: string
   onClick: any
 }
 
@@ -20,14 +21,14 @@ function Item(name: string) {
 }
 
 function FileIcon(props: FileIconProps) {
-  const { name, onClick } = props
+  const { name, onClick, currentName } = props
 
   return (
     <div className="file-item" onClick={onClick}>
-      {Item(name)}
+      {Item(currentName)}
       <div className="name">
-        <Tooltip placement="topLeft" title={name}>
-          {name}
+        <Tooltip placement="topLeft" title={currentName}>
+          {currentName}
         </Tooltip>
       </div>
     </div>

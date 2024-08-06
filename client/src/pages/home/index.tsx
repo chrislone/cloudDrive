@@ -24,6 +24,7 @@ const { Header, Content, Footer } = Layout
 interface IOSSFileItem {
   url: string
   name: string
+  currentName: string
 }
 
 function Home() {
@@ -74,11 +75,16 @@ function Home() {
         <Flex vertical className="flex-wrap">
           <Header style={headerStyle}>
             <Space>
-              <Button onClick={handleGoBack} icon={<ArrowLeftOutlined />}>
+              <Button
+                onClick={handleGoBack}
+                icon={<ArrowLeftOutlined />}
+                disabled={!prefix}
+                className="button-disabled-status"
+              >
                 后退
               </Button>
               <Upload {...uploadDirectoryProps}>
-                <Button icon={<CloudUploadOutlined />}>上传文件夹</Button>
+                <Button icon={<CloudUploadOutlined />}>添加文件夹</Button>
               </Upload>
             </Space>
           </Header>
@@ -90,6 +96,7 @@ function Home() {
                     <FileIcon
                       key={index}
                       name={item.name}
+                      currentName={item.currentName}
                       url={item.url}
                       onClick={() => {
                         handleFileIconClick(item)
