@@ -1,5 +1,5 @@
 import './fileIconIndex.less'
-import { isDirectory, isImage } from '@/utils'
+import { isDirectory, isImage, isVideo } from '@/utils'
 import Iconfont from '@/components/Iconfont'
 import { Tooltip } from 'antd'
 
@@ -15,6 +15,8 @@ function Item(name: string) {
     return <Iconfont type="wenjianjia-1" size={64}></Iconfont>
   } else if (isImage(name)) {
     return <Iconfont type="image" size={64}></Iconfont>
+  } else if (isVideo(name)) {
+    return <Iconfont type="mp" size={64}></Iconfont>
   } else {
     return <Iconfont type="fb" size={64}></Iconfont>
   }

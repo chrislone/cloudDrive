@@ -10,6 +10,10 @@ function isImage(url: string): boolean {
   return fileTypeMap.IMAGE === getFileType(url)
 }
 
+function isVideo(url: string): boolean {
+  return fileTypeMap.VIDEO === getFileType(url)
+}
+
 export type FileTypeMapping = {
   VIDEO: number
   IMAGE: number
@@ -58,6 +62,7 @@ function getFileType(filename: string): FileTypeMapping[keyof FileTypeMapping] {
     case 'mp4':
     case 'avi':
     case 'mkv':
+    case 'mov':
       return fileTypeMap.VIDEO
     case 'csv':
     case 'xls':
@@ -71,11 +76,22 @@ function getFileType(filename: string): FileTypeMapping[keyof FileTypeMapping] {
   }
 }
 
+function doDownload(url: string, fileName: string) {
+  const a = document.createElement('a')
+  a.download = fileName
+  a.href = url
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+}
+
 export {
   isDirectory,
   getFileType,
   fileTypeMap,
   isImage,
+  isVideo,
   appendSlash,
   deleteSlash,
+  doDownload,
 }

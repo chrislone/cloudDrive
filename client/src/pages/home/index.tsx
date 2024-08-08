@@ -3,13 +3,20 @@ import {
   ArrowLeftOutlined,
   CloudUploadOutlined,
   PlusOutlined,
+  HomeOutlined,
 } from '@ant-design/icons'
 import './index.less'
 import FileIcon from '@/components/Fileicon'
 import { useEffect, useState } from 'react'
 import { fetchFileList } from '@/api'
 import { useNavigate, useParams } from 'react-router-dom'
-import { isDirectory, appendSlash, deleteSlash } from '@/utils'
+import {
+  isDirectory,
+  appendSlash,
+  deleteSlash,
+  isImage,
+  isVideo,
+} from '@/utils'
 import {
   contentStyle,
   layoutStyle,
@@ -18,6 +25,15 @@ import {
   uploadFileProps,
   uploadDirectoryProps,
 } from './data'
+import {
+  DownloadOutlined,
+  SwapOutlined,
+  RotateLeftOutlined,
+  RotateRightOutlined,
+  ZoomOutOutlined,
+  ZoomInOutlined,
+  UndoOutlined,
+} from '@ant-design/icons'
 
 const { Header, Content, Footer } = Layout
 
@@ -30,7 +46,9 @@ interface IOSSFileItem {
 function Home() {
   const [list, setList] = useState<IOSSFileItem[]>([])
   const [imagePreviewVisible, setImagePreviewVisible] = useState<boolean>(false)
-  const [previewImageUrl, setPreviewImageUrl] = useState<string>('')
+  const [videoPreviewVisible, setVideoPreviewVisible] = useState<boolean>(false)
+  const [previewObjectUrl, setPreviewObjectUrl] = useState<string>('')
+  const [previewObjectName, setPreviewObjectName] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
   const navigate = useNavigate()
   const params = useParams()
@@ -57,12 +75,36 @@ function Home() {
       return
     }
 
-    setPreviewImageUrl(url)
-    setImagePreviewVisible(true)
+    setPreviewObjectUrl(url)
+    setPreviewObjectName(name)
+    if (isImage(name)) {
+      setImagePreviewVisible(true)
+    } else if (isVideo(name)) {
+      setVideoPreviewVisible(true)
+    }
   }
 
   function handleGoBack() {
     navigate(-1)
+  }
+
+  function handleGoHome() {
+    navigate('/')
+  }
+
+  function handleDownload(url: string, name: string): void {
+    fetch(url)
+      .then((response) => response.blob())
+      .then((blob) => {
+        const url = URL.createObjectURL(new Blob([blob]))
+        const link = document.createElement<'a'>('a')
+        link.href = url
+        link.download = name
+        document.body.appendChild(link)
+        link.click()
+        URL.revokeObjectURL(url)
+        link.remove()
+      })
   }
 
   useEffect(() => {
@@ -86,6 +128,14 @@ function Home() {
               <Upload {...uploadDirectoryProps}>
                 <Button icon={<CloudUploadOutlined />}>添加文件夹</Button>
               </Upload>
+              <Button
+                onClick={handleGoHome}
+                icon={<HomeOutlined />}
+                disabled={!prefix}
+                className="button-disabled-status"
+              >
+                回首页
+              </Button>
             </Space>
           </Header>
           <Content style={contentStyle}>
@@ -120,16 +170,60 @@ function Home() {
           </Footer>
         </Flex>
         <Image
-          width={200}
           style={{ display: 'none' }}
-          src={previewImageUrl}
+          preview={{
+            visible: videoPreviewVisible,
+            src: previewObjectUrl,
+            imageRender: () => (
+              <video height="70%" controls src={previewObjectUrl} />
+            ),
+            onVisibleChange: (value) => {
+              setVideoPreviewVisible(value)
+            },
+            toolbarRender: (_) => <></>,
+          }}
+        ></Image>
+        <Image
+          style={{ display: 'none' }}
+          src={previewObjectUrl}
           preview={{
             visible: imagePreviewVisible,
             scaleStep: 0.5,
-            src: previewImageUrl,
+            src: previewObjectUrl,
             onVisibleChange: (value) => {
               setImagePreviewVisible(value)
             },
+            toolbarRender: (
+              _,
+              {
+                image: { url },
+                transform: { scale },
+                actions: {
+                  onFlipY,
+                  onFlipX,
+                  onRotateLeft,
+                  onRotateRight,
+                  onZoomOut,
+                  onZoomIn,
+                  onReset,
+                },
+              },
+            ) => (
+              <Space size={12} className="toolbar-wrapper">
+                <DownloadOutlined
+                  onClick={() =>
+                    handleDownload(previewObjectUrl, previewObjectName)
+                  }
+                />
+                <SwapOutlined rotate={90} onClick={onFlipY} />
+                <SwapOutlined onClick={onFlipX} />
+                <RotateLeftOutlined onClick={onRotateLeft} />
+                <RotateRightOutlined onClick={onRotateRight} />
+                <ZoomOutOutlined disabled={scale === 1} onClick={onZoomOut} />
+                <ZoomInOutlined disabled={scale === 50} onClick={onZoomIn} />
+                <UndoOutlined onClick={onReset} />
+              </Space>
+            ),
           }}
         />
         <Spin spinning={loading} fullscreen delay={500}></Spin>
