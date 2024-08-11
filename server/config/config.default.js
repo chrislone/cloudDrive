@@ -1,11 +1,21 @@
 /* eslint valid-jsdoc: "off" */
 const assert = require('node:assert')
+const fs = require('node:fs')
+const path = require('node:path')
+
 let globalConfig = {}
+let privateKey = ''
 
 try {
   globalConfig = require('../../config')
 } catch (e) {
   console.error(e)
+}
+
+try {
+  privateKey = fs.readFileSync(path.join(__dirname, '../..', 'privateKey.pem'))
+} catch (err) {
+  console.error(err)
 }
 
 /**
@@ -49,5 +59,6 @@ module.exports = (appInfo) => {
   return {
     ...config,
     aliOSSConfig,
+    privateKey,
   }
 }

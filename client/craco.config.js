@@ -1,8 +1,22 @@
 // craco.config.js
 const CracoAlias = require('craco-alias') // 如果需要配置别名
 const webpack = require('webpack')
-// const path = require("path");
+const path = require('node:path')
+const fs = require('node:fs')
 const CracoLessPlugin = require('craco-less')
+
+let publicKey = ''
+
+try {
+  publicKey = fs.readFileSync(
+    path.resolve(__dirname, '..', 'publicKey.pem'),
+    'utf-8',
+  )
+  console.log('publicKey: ', publicKey)
+} catch (e) {
+  console.error('public key is needed, run `node ./scripts/generateKeys first`')
+  process.exit(1)
+}
 
 module.exports = {
   typescript: {
@@ -29,8 +43,13 @@ module.exports = {
           React: 'react',
         }),
       )
+      console.log('publicKey22222: ', publicKey)
+      webpackConfig.plugins.push(
+        new webpack.DefinePlugin({
+          PUBLICKEYPEM: JSON.stringify(publicKey),
+        }),
+      )
 
-      // 其他配置更改...
       return webpackConfig
     },
   },
@@ -50,6 +69,16 @@ module.exports = {
       },
     },
   },
+  rules: [
+    {
+      test: /index\.tsx$/,
+      loader: 'string-replace-loader',
+      options: {
+        search: 'CRYPTO_PUBLIC_KEY',
+        replace: 'thisIsPublicKey',
+      },
+    },
+  ],
   plugins: [
     {
       plugin: CracoLessPlugin,

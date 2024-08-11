@@ -35,6 +35,30 @@ import {
   UndoOutlined,
 } from '@ant-design/icons'
 
+const publicKey = `-----BEGIN PUBLIC KEY-----
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCmrl8BUYK6FJ7OeNDx9jPYaS+H
+qRjT4fwR6s3OKb8Y9NtokQWCHBGelqIFunofHGCwqAf5HcomwRSWqCcKKxkn2sDg
+iG9er/O+l4CMhaql36Mxt9O8q03QnGToe3a3wr4x2ir7dHMMK3NujTsZ1R6wUSd8
+f3/Fq8okeQaffvn2LwIDAQAB
+-----END PUBLIC KEY-----`
+
+const privateKey = `-----BEGIN PRIVATE KEY-----
+MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAKauXwFRgroUns54
+0PH2M9hpL4epGNPh/BHqzc4pvxj022iRBYIcEZ6WogW6eh8cYLCoB/kdyibBFJao
+JworGSfawOCIb16v876XgIyFqqXfozG307yrTdCcZOh7drfCvjHaKvt0cwwrc26N
+OxnVHrBRJ3x/f8WryiR5Bp9++fYvAgMBAAECgYEAgfsq5VlOK5RW/0ZiEr5fUd09
+DnrEfL8XFlXYJnSRrIGN9G5bMEp5RwXK1dLE1ywHDtwKU69ybGRXjOEWiKxxUUtT
+lyY9urvStqNUjgBSxiT73uihJPhi4CovDiI5GnhnU+XtCYnPKBr6ORfSn8I4DBZH
+Prc+ue0sjR+o0FFhHakCQQDbl0pL5+GKr53Cgodc8HsY5NVgaccID5fmaOFF8ix/
+a4D9VoXolvU4SoK7RIrgUJOTPvAga4NYC8WvPgs2eRRtAkEAwlFIFdg3Mhy6uKei
+92I64wZfPoX/WP+8Or6ZmTuRZs74WKAGz5qziJmCpNZqyU6dOTxZvztIu/h23GM6
+8en7iwJAJGvlgM2HFS+npPltZjbk0+4wjfs9bdLYSPkgVC+kvcWg8WQGdduD9MA3
+CsSFnEsBDy0jOt1aPaJGOZi612AhyQJBAKcmL/HKeUA8AkoQuVg/QRRESO2Jairu
+YMXPamSrHtnmsy3ZCcLO+hxIoF6WqmjbnNa9GR4sKta2Vdgh63Ropx0CQFqq98CZ
+hqMBTgvd6pJfzJNd/BF8Or2G+ZTlXSyNzJNuuSA8Zn8V8dJJRqZvEIJO/tPF8CvI
+4BGUnynmmrwW6AA=
+-----END PRIVATE KEY-----`
+
 const { Header, Content, Footer } = Layout
 
 interface IOSSFileItem {

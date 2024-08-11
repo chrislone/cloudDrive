@@ -9,4 +9,6 @@ module.exports = (app) => {
   router.post('/api/oss/file/list', controller.oss.list)
   router.post('/api/oss/dir/create', controller.oss.createDir)
   router.post('/api/oss/file/batchDelete', controller.oss.batchDelete)
+
+  router.post('/api/user/login', controller.user.login)
 }

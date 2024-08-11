@@ -7,4 +7,11 @@ const fetchFileList = (data = {}) => {
   })
 }
 
-export { fetchFileList }
+const userLogin = (data = {}) => {
+  return http('/api/user/login', {
+    method: 'POST',
+    data,
+  })
+}
+
+export { fetchFileList, userLogin }

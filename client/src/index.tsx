@@ -1,19 +1,21 @@
 import React from 'react'
-import {Flex} from "antd";
+import { Flex } from 'antd'
 import ReactDOM from 'react-dom/client'
 import './index.less'
 // import reportWebVitals from './reportWebVitals';
 import { RouterProvider } from 'react-router-dom'
 import router from './router'
 
+window.publicKey = PUBLICKEYPEM
+
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
   // <React.StrictMode>
-	<Flex vertical={true} className="main-container-wrap">
-		<div className="main-container">
-			<RouterProvider router={router} />,
-		</div>
-	</Flex>
+  <Flex vertical={true} className="main-container-wrap">
+    <div className="main-container">
+      <RouterProvider router={router} />,
+    </div>
+  </Flex>,
   // </React.StrictMode>,
 )
 

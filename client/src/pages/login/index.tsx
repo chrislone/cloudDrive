@@ -1,5 +1,6 @@
 import { Layout, Card, Button, Form, Input, Space } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
+import { userLogin } from '@/api'
 import './index.less'
 
 const { Content } = Layout
@@ -19,14 +20,26 @@ const layoutStyle: React.CSSProperties = {
   height: '100%',
 }
 
+// 使用公钥加密数据
+function encrypt(publicKeyPem: string, message: string): string {
+  const publicKey = window.forge.pki.publicKeyFromPem(publicKeyPem)
+  const encrypted = publicKey.encrypt(message, 'RSA-OAEP') // 使用 OAEP 填充模式
+  return window.forge.util.encode64(encrypted)
+}
+
 function Login() {
   const [form] = Form.useForm()
 
   const handleSubmitLogin = () => {
     form
       .validateFields()
-      .then((res) => {
-        console.log(res)
+      .then((validRes) => {
+        userLogin({
+          username: validRes.username,
+          password: encrypt(window.publicKey, validRes.password),
+        }).then((res) => {
+          console.log('res: ', res)
+        })
       })
       .catch((err) => {
         console.log(err)
