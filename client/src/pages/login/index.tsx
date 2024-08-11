@@ -73,10 +73,10 @@ function Login() {
                 name="password"
                 rules={[{ required: true, message: '请输入密码' }]}
               >
-                <Input
+                <Input.Password
                   prefix={<LockOutlined />}
                   placeholder="请输入密码"
-                ></Input>
+                ></Input.Password>
               </Form.Item>
 
               <Form.Item>
