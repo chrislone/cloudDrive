@@ -5,6 +5,7 @@ const path = require('node:path')
 
 let globalConfig = {}
 let privateKey = ''
+let publicKey = ''
 
 try {
   globalConfig = require('../../config')
@@ -14,6 +15,7 @@ try {
 
 try {
   privateKey = fs.readFileSync(path.join(__dirname, '../..', 'privateKey.pem'))
+  publicKey = fs.readFileSync(path.join(__dirname, '../..', 'publicKey.pem'))
 } catch (err) {
   console.error(err)
 }
@@ -56,9 +58,13 @@ module.exports = (appInfo) => {
     callbackUrl: '',
   }
 
+  const authUsers = globalConfig.authUsers || []
+
   return {
     ...config,
     aliOSSConfig,
+    authUsers,
     privateKey,
+    publicKey,
   }
 }

@@ -35,8 +35,8 @@ function Login() {
       .validateFields()
       .then((validRes) => {
         userLogin({
-          username: validRes.username,
-          password: encrypt(window.publicKey, validRes.password),
+          u: validRes.username,
+          p: encrypt(window.publicKey, validRes.password),
         }).then((res) => {
           console.log('res: ', res)
         })
@@ -60,7 +60,7 @@ function Login() {
             <Space direction="vertical" size="middle" style={{ width: '100%' }}>
               <Form.Item
                 className="item"
-                name="userName"
+                name="username"
                 rules={[{ required: true, message: '请输入用户名' }]}
               >
                 <Input

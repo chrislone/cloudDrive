@@ -12,7 +12,6 @@ try {
     path.resolve(__dirname, '..', 'publicKey.pem'),
     'utf-8',
   )
-  console.log('publicKey: ', publicKey)
 } catch (e) {
   console.error('public key is needed, run `node ./scripts/generateKeys first`')
   process.exit(1)
@@ -43,7 +42,6 @@ module.exports = {
           React: 'react',
         }),
       )
-      console.log('publicKey22222: ', publicKey)
       webpackConfig.plugins.push(
         new webpack.DefinePlugin({
           PUBLICKEYPEM: JSON.stringify(publicKey),
@@ -67,6 +65,9 @@ module.exports = {
         changeOrigin: true,
         logLevel: 'debug',
       },
+    },
+    client: {
+      overlay: false,
     },
   },
   rules: [

@@ -1,28 +1,53 @@
 const { Controller } = require('egg')
-const crypto = require('node:crypto')
+const {
+  createPrivateKey,
+  privateDecrypt,
+  createSign,
+  createVerify,
+} = require('node:crypto')
 
 class UserController extends Controller {
-  login() {
+  async login() {
     const { ctx, app } = this
     ctx.logger.info(ctx.request.body)
 
-    const keyObject = crypto.createPrivateKey({
-      key: app.config.privateKey,
-      type: 'pkcs1',
-      format: 'pem',
-      // padding 默认值就是 crypto.constants.RSA_PKCS1_OAEP_PADDING
-      // padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+    const { u, p } = ctx.request.body
+    const { privateKey, authUsers } = app.config
+
+    const userInfoItem = authUsers.find((item) => {
+      return item.username === u
     })
 
-    const decryptedBuf = crypto.privateDecrypt(
-      keyObject,
-      Buffer.from(ctx.request.body.password, 'base64'),
-    )
+    if (!userInfoItem) {
+      ctx.status = 403
+      ctx.body = {
+        msg: 'user not exist or password incorrect',
+      }
+      return
+    }
 
-    ctx.logger.info(decryptedBuf.toString())
+    const sign = createSign('SHA256')
+    sign.update(p)
+    sign.end()
+    const signature = sign.sign(privateKey)
+
+    const verify = createVerify('SHA256')
+    verify.update(userInfoItem.password)
+    verify.end()
+
+    const verifyResult = verify.verify(privateKey, signature)
+
+    this.logger.info('verifyResult: ', verifyResult)
+    if (!verifyResult) {
+      ctx.status = 403
+      ctx.body = {
+        msg: 'user not exist or password incorrect',
+      }
+      return
+    }
 
     ctx.body = {
-      status: 'Ok',
+      msg: 'Ok',
     }
   }
 }
