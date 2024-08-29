@@ -47,7 +47,7 @@ module.exports = (appInfo) => {
   config.keys = appInfo.name + '_20240722_2200'
 
   // add your middleware config here
-  config.middleware = ['responseWrap']
+  config.middleware = []
 
   // 阿里 OSS 配置
   const aliOSSConfig = globalConfig.aliOSSConfig || {
@@ -60,11 +60,20 @@ module.exports = (appInfo) => {
 
   const authUsers = globalConfig.authUsers || []
 
+  const session = {
+    key: 'DRIVE',
+    maxAge: 24 * 3600 * 1000,
+    httpOnly: true,
+    encrypt: true,
+    renew: true,
+  }
+
   return {
     ...config,
     aliOSSConfig,
     authUsers,
     privateKey,
     publicKey,
+    session,
   }
 }

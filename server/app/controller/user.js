@@ -1,10 +1,6 @@
-const { Controller } = require('egg')
-const {
-  createPrivateKey,
-  privateDecrypt,
-  createSign,
-  createVerify,
-} = require('node:crypto')
+const Controller = require('../core/baseController')
+const { createPrivateKey, privateDecrypt } = require('node:crypto')
+const ms = require('ms')
 
 class UserController extends Controller {
   async login() {
@@ -19,36 +15,47 @@ class UserController extends Controller {
     })
 
     if (!userInfoItem) {
-      ctx.status = 403
-      ctx.body = {
-        msg: 'user not exist or password incorrect',
-      }
+      this.fail(401, {
+        msg: 'user not found or password incorrect',
+      })
       return
     }
 
-    const sign = createSign('SHA256')
-    sign.update(p)
-    sign.end()
-    const signature = sign.sign(privateKey)
+    const keyObject = createPrivateKey({
+      key: privateKey,
+      type: 'pkcs1',
+      format: 'pem',
+      // padding 默认值就是 crypto.constants.RSA_PAKC1_OAEP_PADDING
+      // padding: crypto.constants.RSA_PAKC1_OAEP_PADDING,
+    })
 
-    const verify = createVerify('SHA256')
-    verify.update(userInfoItem.password)
-    verify.end()
+    let decryptedBuf = Buffer.from('')
+    let verifyResult = false
 
-    const verifyResult = verify.verify(privateKey, signature)
+    try {
+      decryptedBuf = privateDecrypt(keyObject, Buffer.from(p, 'base64'))
+      verifyResult = userInfoItem.password === decryptedBuf.toString()
+    } catch (e) {
+      this.fail(401, {
+        msg: 'user not found or password incorrect',
+      })
+      return
+    }
 
     this.logger.info('verifyResult: ', verifyResult)
     if (!verifyResult) {
-      ctx.status = 403
-      ctx.body = {
-        msg: 'user not exist or password incorrect',
-      }
+      this.fail(401, {
+        msg: 'user not found or password incorrect',
+      })
       return
     }
 
-    ctx.body = {
-      msg: 'Ok',
+    this.user = {
+      u,
+      et: Date.now() + ms('1h'),
     }
+
+    this.success()
   }
 }
 

@@ -8,4 +8,5 @@ module.exports = {
     enable: true,
     package: 'egg-validate',
   },
+  session: true,
 }

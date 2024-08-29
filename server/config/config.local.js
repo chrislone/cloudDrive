@@ -24,7 +24,7 @@ module.exports = (appInfo) => {
   const config = (exports = {})
 
   // add your middleware config here
-  config.middleware = ['responseWrap', 'cors']
+  config.middleware = ['cors']
 
   // 阿里 OSS 配置
   const aliOSSConfig = globalConfig.aliOSSConfig || {

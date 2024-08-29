@@ -1,4 +1,4 @@
-const { Controller } = require('egg')
+const Controller = require('../core/baseController')
 const OSS = require('ali-oss')
 // const path = require('node:path');
 const moment = require('moment')
@@ -108,7 +108,6 @@ class OssController extends Controller {
       const pathList = item.name.split('/').filter((i) => {
         return i
       })
-      console.log('pathList: ', pathList)
       const minus = pathList.length - prefixPathList.length
       const url = await client.asyncSignatureUrl(item.name, {
         // default 1800 seconds
@@ -133,7 +132,7 @@ class OssController extends Controller {
       })
     }
     logger.info('oss/file/list body: ', body)
-    ctx.body = body
+    this.success(body)
   }
 
   // 创建目录
