@@ -70,16 +70,7 @@ module.exports = {
       overlay: false,
     },
   },
-  rules: [
-    {
-      test: /index\.tsx$/,
-      loader: 'string-replace-loader',
-      options: {
-        search: 'CRYPTO_PUBLIC_KEY',
-        replace: 'thisIsPublicKey',
-      },
-    },
-  ],
+  rules: [],
   plugins: [
     {
       plugin: CracoLessPlugin,

@@ -2,6 +2,9 @@ import { Layout, Card, Button, Form, Input, Space } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
 import { userLogin } from '@/api'
 import './index.less'
+import { useNavigate } from 'react-router-dom'
+
+const forge = require('@/utils/forge')
 
 const { Content } = Layout
 
@@ -22,13 +25,14 @@ const layoutStyle: React.CSSProperties = {
 
 // 使用公钥加密数据
 function encrypt(publicKeyPem: string, message: string): string {
-  const publicKey = window.forge.pki.publicKeyFromPem(publicKeyPem)
+  const publicKey = forge.pki.publicKeyFromPem(publicKeyPem)
   const encrypted = publicKey.encrypt(message, 'RSA-OAEP') // 使用 OAEP 填充模式
-  return window.forge.util.encode64(encrypted)
+  return forge.util.encode64(encrypted)
 }
 
 function Login() {
   const [form] = Form.useForm()
+  const navigate = useNavigate()
 
   const handleSubmitLogin = () => {
     form
@@ -36,9 +40,11 @@ function Login() {
       .then((validRes) => {
         userLogin({
           u: validRes.username,
+          // @ts-ignore 2339
           p: encrypt(window.publicKey, validRes.password),
         }).then((res) => {
           console.log('res: ', res)
+          navigate('/')
         })
       })
       .catch((err) => {

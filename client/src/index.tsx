@@ -6,6 +6,7 @@ import './index.less'
 import { RouterProvider } from 'react-router-dom'
 import router from './router'
 
+// @ts-ignore 2339
 window.publicKey = PUBLICKEYPEM
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
@@ -13,7 +14,7 @@ root.render(
   // <React.StrictMode>
   <Flex vertical={true} className="main-container-wrap">
     <div className="main-container">
-      <RouterProvider router={router} />,
+      <RouterProvider router={router} />
     </div>
   </Flex>,
   // </React.StrictMode>,
