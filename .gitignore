@@ -2,3 +2,4 @@ config.development.js
 privateKey.pem
 publicKey.pem
 node_modules/
+.idea

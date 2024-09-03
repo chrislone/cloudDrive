@@ -13,7 +13,7 @@ try {
     'utf-8',
   )
 } catch (e) {
-  console.error('public key is needed, run `node ./scripts/generateKeys first`')
+  console.error('public key is needed, run `node ./scripts/generateKeys` first')
   process.exit(1)
 }
 
